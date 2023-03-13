@@ -1,0 +1,2 @@
+#!/bin/bash
+grrep -v "bin" /etc/passwd
