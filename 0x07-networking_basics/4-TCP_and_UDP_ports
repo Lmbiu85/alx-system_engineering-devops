@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# Display listening TCP ports with PID and program name
+echo "Active Internet connections (only servers)"
+echo "Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name"
+
+# Extract listening TCP ports with PID and program name
+netstat -tlnp | awk '/^tcp/ {print $1, $4, $7}' | sed 's/:::/[::]/' | awk '{split($3, a, "/"); print $1, $2, a[1], a[2]}' | column -t
+
+# Display listening UDP ports with PID and program name
+echo -e "\nActive UDP sockets (only servers)"
+echo "Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name"
+
+# Extract listening UDP ports with PID and program name
+netstat -ulnp | awk '/^udp/ {print $1, $4, $7}' | sed 's/:::/[::]/' | awk '{split($3, a, "/"); print $1, $2, a[1], a[2]}' | column -t
