@@ -12,10 +12,35 @@ def top_ten(subreddit):
     params = {
         "limit": 10
     }
-    response = requests.get(url, headers=headers, params=params,
-                            allow_redirects=False)
-    if response.status_code == 404:
+
+    try:
+        response = requests.get(url, headers=headers, params=params,
+                                allow_redirects=False)
+        if response.status_code == 404:
+            print("None")
+            return
+
+        # Check if response is JSON
+        try:
+            results = response.json().get("data", {})
+        except ValueError:
+            print("None")
+            return
+
+        children = results.get("children", [])
+        if not children:
+            print("None")
+            return
+
+        for c in children:
+            print(c.get("data", {}).get("title", "None"))
+    except requests.RequestException as e:
         print("None")
-        return
-    results = response.json().get("data")
-    [print(c.get("data").get("title")) for c in results.get("children")]
+
+
+if __name__ == '__main__':
+    import sys
+    if len(sys.argv) < 2:
+        print("Please pass an argument for the subreddit to search.")
+    else:
+        top_ten(sys.argv[1])
